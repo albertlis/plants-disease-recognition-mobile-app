@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
 import com.theartofdev.edmodo.cropper.CropImage
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 
 
@@ -21,8 +22,8 @@ class PredictActivity : AppCompatActivity() {
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri>() {
         override fun createIntent(context: Context, input: Any?): Intent {
             return CropImage.activity()
-                    .setAspectRatio(1, 1)
-                    .getIntent(this@PredictActivity)
+                .setAspectRatio(1, 1)
+                .getIntent(this@PredictActivity)
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
@@ -31,10 +32,13 @@ class PredictActivity : AppCompatActivity() {
     }
 
     private val cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
-        it?.let { uri ->
+        it?.let { imageUri ->
             val imageView = findViewById<ImageView>(R.id.imageView)
-            imageView.setImageURI(uri)
-            classifyDrawing(uri)
+            imageView.setImageURI(imageUri)
+            classifyImage(imageUri)
+        } ?: run {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
         }
     }
 
@@ -43,13 +47,7 @@ class PredictActivity : AppCompatActivity() {
         setContentView(R.layout.activity_predict)
 
         cropActivityResultLauncher.launch(null)
-        imageClassifier
-            .initialize()
-            .addOnFailureListener { e -> Log.e(
-                "PredictActivity",
-                "Error to setting up digit classifier.",
-                e
-            ) }
+        imageClassifier.initialize()
     }
 
     override fun onBackPressed() {
@@ -58,20 +56,19 @@ class PredictActivity : AppCompatActivity() {
         finish()
     }
 
-    override fun onDestroy() {
-        imageClassifier.close()
-        super.onDestroy()
-    }
-
-
-    private fun classifyDrawing(uri: Uri) {
-        val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-        if ((bitmap != null) && (imageClassifier.isInitialized)) {
+    private fun classifyImage(imageUri: Uri) {
+        if (imageClassifier.isInitialized) {
             val predictView = findViewById<TextView>(R.id.predictView)
             imageClassifier
-                .classifyAsync(bitmap)
-                .addOnSuccessListener { resultText -> predictView.text = resultText }
-                .addOnFailureListener { e ->
+                .classifyAsync(imageUri)
+                .addOnSuccessListener { resultText ->
+                    val parts = resultText.split("=")
+                    val prediction = parts[0]
+                    val value = parts[1].toFloat() * 100
+                    val df = DecimalFormat("##.#")
+                    df.roundingMode = RoundingMode.CEILING
+                    predictView.text = "It's $prediction with probability ${df.format(value)}%" }
+                .addOnFailureListener { _ ->
                     predictView.text = "Something went wrong"
                 }
         }

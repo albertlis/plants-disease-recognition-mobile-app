@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "320780431810",
+    "project_id": "pdr-mobile-da2ca",
+    "storage_bucket": "pdr-mobile-da2ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320780431810:android:5cd4747111bef0902a665b",
+        "android_client_info": {
+          "package_name": "com.albertlis.myapplication1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320780431810-umn2dlj5dkcbnms8d1472bq79tjj63ru.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYr3SKuGvEm0kJ8EhSH44XKgUK6UNcjJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320780431810-umn2dlj5dkcbnms8d1472bq79tjj63ru.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

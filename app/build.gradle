@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.albertlis.myapplication1"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -38,12 +38,6 @@ android {
         noCompress "tflite"
         noCompress "lite"
     }
-
-//    preBuild.doFirst {
-//        assert file("./src/main/assets/mnist2.tflite").exists() :
-//                "mnist2.tflite not found. Make sure you have trained and " +
-//                        "downloaded your TensorFlow Lite model to assets/ folder"
-//    }
 }
 
 dependencies {
